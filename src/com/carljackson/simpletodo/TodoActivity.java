@@ -6,6 +6,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -25,6 +28,19 @@ public class TodoActivity extends Activity {
 		listViewItems.setAdapter(itemsAdapter);
 		items.add("First Item");
 		items.add("Second Item");
+		setupListViewListener();
+	}
+
+	public void setupListViewListener() {
+		listViewItems.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> view, View item, int position, long id) {
+				items.remove(position);
+				itemsAdapter.notifyDataSetInvalidated();
+				return true;
+			}
+		});
 	}
 
 	@Override
@@ -39,5 +55,4 @@ public class TodoActivity extends Activity {
 		itemsAdapter.add(editTextNewItem.getText().toString());
 		editTextNewItem.setText("");		
 	}
-
 }
