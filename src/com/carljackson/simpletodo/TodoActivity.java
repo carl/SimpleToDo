@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 public class TodoActivity extends Activity {
@@ -30,6 +32,12 @@ public class TodoActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.todo, menu);
 		return true;
+	}
+
+	public void addTodoItem(View view) {
+		EditText editTextNewItem = (EditText) findViewById(R.id.editTextItem);
+		itemsAdapter.add(editTextNewItem.getText().toString());
+		editTextNewItem.setText("");		
 	}
 
 }
