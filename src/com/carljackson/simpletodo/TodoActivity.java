@@ -1,9 +1,14 @@
 package com.carljackson.simpletodo;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.commons.io.FileUtils;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.provider.MediaStore.Files;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -22,12 +27,11 @@ public class TodoActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo);
+		readItems();
 		listViewItems = (ListView) findViewById(R.id.listViewItems);
 		items = new ArrayList<String>();
 		itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
 		listViewItems.setAdapter(itemsAdapter);
-		items.add("First Item");
-		items.add("Second Item");
 		setupListViewListener();
 	}
 
@@ -38,6 +42,7 @@ public class TodoActivity extends Activity {
 			public boolean onItemLongClick(AdapterView<?> view, View item, int position, long id) {
 				items.remove(position);
 				itemsAdapter.notifyDataSetInvalidated();
+				saveItems();
 				return true;
 			}
 		});
@@ -53,6 +58,28 @@ public class TodoActivity extends Activity {
 	public void addTodoItem(View view) {
 		EditText editTextNewItem = (EditText) findViewById(R.id.editTextItem);
 		itemsAdapter.add(editTextNewItem.getText().toString());
-		editTextNewItem.setText("");		
+		editTextNewItem.setText("");
+		saveItems();
+	}
+
+	private void readItems() {
+		File filesDir = getFilesDir();
+		File todoFile = new File(filesDir, "todo.txt");
+		try {
+			items = new ArrayList<String>(FileUtils.readLines(todoFile));
+		} catch (IOException e) {
+			items = new ArrayList<String>();
+			e.printStackTrace();						
+		}		
+	}
+
+	private void saveItems() {
+		File filesDir = getFilesDir();
+		File todoFile = new File(filesDir, "todo.txt");
+		try {
+			FileUtils.writeLines(todoFile, items);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
